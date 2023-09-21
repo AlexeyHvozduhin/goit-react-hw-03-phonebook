@@ -31,20 +31,21 @@ export class App extends Component {
     if (storedContacts) {
       const parsedContacts = JSON.parse(storedContacts);
       this.setState({ contacts: parsedContacts });
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
     }
   }
 
-  changeName = line => {
-    this.setState({
-      name: line,
-    });
-  };
+  // changeName = line => {
+  //   this.setState({
+  //     name: line,
+  //   });
+  // };
 
-  changeNumber = line => {
-    this.setState({
-      number: line,
-    });
-  };
+  // changeNumber = line => {
+  //   this.setState({
+  //     number: line,
+  //   });
+  // };
 
   changeFilter = line => {
     this.setState({
@@ -52,9 +53,15 @@ export class App extends Component {
     });
   };
 
-  addContactLocalStorage = () => {
-    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-  };
+  // addContactLocalStorage = () => {
+  //   localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+  // };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   addContacts = ({ name, number }) => {
     const isDuplicate = this.state.contacts.some(items => {
@@ -63,20 +70,17 @@ export class App extends Component {
 
     if (isDuplicate) return window.alert(`${name} is already in contacts.`);
 
-    this.setState(
-      prevState => ({
-        contacts: [{ id: nanoid(), name, number }, ...prevState.contacts],
-      }),
-      this.addContactLocalStorage
-    );
+    this.setState(prevState => ({
+      contacts: [{ id: nanoid(), name, number }, ...prevState.contacts],
+    }));
   };
 
   deleteContact = id => {
     this.setState(
       prevState => ({
         contacts: prevState.contacts.filter(quiz => quiz.id !== id),
-      }),
-      this.addContactLocalStorage
+      })
+      // this.addContactLocalStorage
     );
   };
 
